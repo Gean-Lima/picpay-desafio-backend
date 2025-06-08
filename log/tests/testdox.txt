@@ -1,0 +1,8 @@
+Config
+ [x] Config
+
+Routes
+ [x] Must add a new route to the list
+ [x] There must be a duplicate route exception
+ [x] Add a get route with the static method
+

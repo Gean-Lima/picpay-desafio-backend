@@ -1,0 +1,26 @@
+{
+    "name": "neo/picpay-desafio-backend",
+    "autoload": {
+        "psr-4": {
+            "Neo\\PicpayDesafioBackend\\": "src/",
+            "Neo\\PicpayDesafioBackend\\Test\\": "tests/"
+        },
+        "files": [
+            "src/Helpers/debug.php",
+            "src/Helpers/libraries.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Gean-Lima",
+            "email": "geanlimasp12345@gmail.com"
+        }
+    ],
+    "scripts": {
+        "serve": "exec php -S localhost:8000",
+        "test": "exec php ./vendor/bin/phpunit"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.1"
+    }
+}
