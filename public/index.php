@@ -20,14 +20,7 @@ $config = Config::getInstance();
 /**
  * Define a conexão com o banco de dados.
  */
-$database = new Database(
-    driver: DatabaseDriver::MYSQL,
-    database: $config->get('database.name'),
-    host: $config->get('database.host'),
-    port: $config->get('database.port'),
-    username: $config->get('database.username'),
-    password: $config->get('database.password'),
-);
+$database = database();
 Model::setDatabase($database);
 
 /**

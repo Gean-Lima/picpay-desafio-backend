@@ -3,7 +3,6 @@
 namespace Neo\PicpayDesafioBackend\Database\Migrations;
 
 use Neo\PicpayDesafioBackend\Database\Database;
-use Neo\PicpayDesafioBackend\Database\DatabaseDriver;
 use Neo\PicpayDesafioBackend\Database\Migrations\InterfaceMigrate;
 
 class UserMigration implements InterfaceMigrate
@@ -12,7 +11,7 @@ class UserMigration implements InterfaceMigrate
     {
         $db->query(<<<SQL
             CREATE TABLE IF NOT EXISTS users (
-                id UNSIGNED BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 cpf_cnpj VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,

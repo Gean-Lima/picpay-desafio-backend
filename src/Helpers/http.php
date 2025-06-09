@@ -1,6 +1,6 @@
 <?php
 
-use Neo\PicpayDesafioBackend\Lib\Request;
+use Neo\PicpayDesafioBackend\Http\Request;
 
 function request(): Request
 {

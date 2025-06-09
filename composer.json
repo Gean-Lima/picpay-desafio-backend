@@ -7,7 +7,8 @@
         },
         "files": [
             "src/Helpers/debug.php",
-            "src/Helpers/libraries.php"
+            "src/Helpers/http.php",
+            "src/Helpers/database.php"
         ]
     },
     "authors": [
@@ -17,6 +18,7 @@
         }
     ],
     "scripts": {
+        "execute": "exec php ./src/Command/command.php",
         "serve": "exec php -S localhost:8000",
         "test": "exec php ./vendor/bin/phpunit"
     },
