@@ -1,6 +1,6 @@
 <?php
 
-namespace Neo\PicpayDesafioBackend\Database\Migrations;
+namespace Neo\PicpayDesafioBackend\Database;
 
 use Neo\PicpayDesafioBackend\Database\Database;
 

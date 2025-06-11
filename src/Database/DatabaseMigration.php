@@ -3,17 +3,28 @@
 namespace Neo\PicpayDesafioBackend\Database;
 
 use Exception;
-use Neo\PicpayDesafioBackend\Database\Migrations\InterfaceMigrate;
+use Neo\PicpayDesafioBackend\Config\Config;
+use Neo\PicpayDesafioBackend\Database\InterfaceMigrate;
 
 class DatabaseMigration
 {
-    public function __construct(private Database $database) {}
+    public function __construct(private Database $database, private Config $config) {}
 
     public function migrate(): bool
     {
         try {
-            $migrations = $this->database->query('SELECT migration_name FROM migrations');
-            $migrations = array_column($migrations, 'migration_name');
+            $migrations = [];
+
+            $migrationsTableExist = $this->database->query(<<<SQL
+                SELECT COUNT(*) AS total FROM information_schema.tables
+                WHERE table_schema = ? AND table_name = 'migrations'
+            SQL, [$this->config->get('database.name')]);
+            $migrationsTableExist = (int) $migrationsTableExist[0]['total'];
+
+            if ($migrationsTableExist > 0) {
+                $migrations = $this->database->query('SELECT migration_name FROM migrations');
+                $migrations = array_column($migrations, 'migration_name');
+            }
 
             $list = scandir(__DIR__ . '/Migrations');
 
@@ -65,7 +76,58 @@ class DatabaseMigration
 
             return true;
         } catch (Exception $e) {
-            echo "Migration failed: " . $e->getMessage();
+            echo "Migration failed: " . $e->getMessage().PHP_EOL;
+            return false;
+        }
+    }
+
+    public function rollback(): bool
+    {
+        try {
+            $rows = $this->database->query('SELECT * FROM migrations ORDER BY created_at DESC LIMIT 1');
+            $migration = $rows[0]['migration_name'];
+
+            $list = scandir(__DIR__.'/Migrations');
+
+            if ($list === false) {
+                throw new Exception('Failed to read migrations directory');
+            }
+
+            if (empty($list)) {
+                throw new Exception('No migration files found');
+            }
+
+            if (!in_array($migration, $list)) {
+                throw new Exception('Last migration not found');
+            }
+
+            echo 'Migration rollback: '.$migration.PHP_EOL;
+
+            require_once __DIR__.'/Migrations/'.$migration;
+
+            $nameClass = pathinfo($migration, PATHINFO_FILENAME);
+            $nameClass = substr($nameClass, strpos($nameClass, '__') + 2);
+
+            $migrationClass = "Neo\\PicpayDesafioBackend\\Database\\Migrations\\{$nameClass}";
+
+            if (!class_exists($migrationClass)) {
+                throw new Exception("Migration class {$migrationClass} does not exist");
+            }
+
+            $migrationInstance = new $migrationClass();
+
+            if (!($migrationInstance instanceof InterfaceMigrate)) {
+                throw new Exception("Migration class {$migrationClass} does not implement InterfaceMigrate");
+            }
+
+            $migrationInstance->down($this->database);
+
+            if (!str_starts_with($migration, '0000')) $this->database->query('DELETE FROM migrations WHERE migration_name = ?', [$migration]);
+
+            return true;
+        }
+        catch (Exception $e) {
+            echo 'Rollback failed: '.$e->getMessage().PHP_EOL;
             return false;
         }
     }

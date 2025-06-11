@@ -3,7 +3,7 @@
 namespace Neo\PicpayDesafioBackend\Database\Migrations;
 
 use Neo\PicpayDesafioBackend\Database\Database;
-use Neo\PicpayDesafioBackend\Database\Migrations\InterfaceMigrate;
+use Neo\PicpayDesafioBackend\Database\InterfaceMigrate;
 
 class MigrationsMigration implements InterfaceMigrate
 {
@@ -13,7 +13,7 @@ class MigrationsMigration implements InterfaceMigrate
             CREATE TABLE IF NOT EXISTS migrations (
                 id INTEGER AUTO_INCREMENT PRIMARY KEY,
                 migration_name VARCHAR(255) NOT NULL UNIQUE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)
             );
         SQL);
     }

@@ -3,7 +3,7 @@
 namespace Neo\PicpayDesafioBackend\Database\Migrations;
 
 use Neo\PicpayDesafioBackend\Database\Database;
-use Neo\PicpayDesafioBackend\Database\Migrations\InterfaceMigrate;
+use Neo\PicpayDesafioBackend\Database\InterfaceMigrate;
 
 class UserMigration implements InterfaceMigrate
 {

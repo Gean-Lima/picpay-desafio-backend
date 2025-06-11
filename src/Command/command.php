@@ -3,7 +3,8 @@
 require_once __DIR__.'/../../vendor/autoload.php';
 
 $commands = [
-    'migrate' => Neo\PicpayDesafioBackend\Command\MigrateCommand::class
+    'migrate' => Neo\PicpayDesafioBackend\Command\MigrateCommand::class,
+    'rollback' => Neo\PicpayDesafioBackend\Command\RollbackCommand::class
 ];
 
 $command = $argv[1] ?? null;
