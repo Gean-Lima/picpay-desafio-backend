@@ -1,5 +1,6 @@
 Config
- [x] Config
+ [x] Get option from config
+ [x] Return exception if key not exist
 
 Routes
  [x] Must add a new route to the list

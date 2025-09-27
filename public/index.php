@@ -2,57 +2,51 @@
 
 declare(strict_types=1);
 
-use Neo\PicpayDesafioBackend\Config\Config;
-use Neo\PicpayDesafioBackend\Database\Database;
-use Neo\PicpayDesafioBackend\Database\DatabaseDriver;
 use Neo\PicpayDesafioBackend\Http\Routing\Routes;
-use Neo\PicpayDesafioBackend\Model\Model;
 
-require __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
-include __DIR__.'/../src/routes.php';
+try {
+    require_once __DIR__.'/../src/bootstrap.php';
+    require_once __DIR__.'/../src/routes.php';
 
-/**
- * Inicia as configurações do sistema.
- */
-$config = Config::getInstance();
+    /**
+     * Encontra a rota atual e renderiza o conteúdo.
+     * Se não encontrar, retorna 404.
+     * Se for um arquivo público, retorna o conteúdo do arquivo.
+     */
+    $routes = Routes::getInstance();
 
-/**
- * Define a conexão com o banco de dados.
- */
-$database = database();
-Model::setDatabase($database);
+    $requestUri = $_SERVER['REQUEST_URI'];
 
-/**
- * Encontra a rota atual e renderiza o conteúdo.
- * Se não encontrar, retorna 404.
- * Se for um arquivo público, retorna o conteúdo do arquivo.
- */
-$routes = Routes::getInstance();
+    $publicFile = __DIR__.'/'.$requestUri;
 
-$requestUri = $_SERVER['REQUEST_URI'];
+    if (!is_dir($publicFile) && file_exists($publicFile))
+    {
+        $content = file_get_contents($publicFile);
+        $mime = mime_content_type($publicFile);
 
-$publicFile = __DIR__.'/'.$requestUri;
+        header('Content-Type: '.$mime);
+        echo $content;
 
-if (!is_dir($publicFile) && file_exists($publicFile))
-{
-    $content = file_get_contents($publicFile);
-    $mime = mime_content_type($publicFile);
+        die;
+    }
 
-    header('Content-Type: '.$mime);
-    echo $content;
+    $routeName = Routes::currentRouteName();
 
+    /** @var Route|null $route */
+    $route = array_find($routes->getList(), fn($_, $key) => $key === $routeName);
+
+    if ($route) {
+        $route->render();
+        die;
+    }
+
+    http_response_code(404);
+}
+catch (Throwable $e) {
+    http_response_code(500);
+    echo 'Erro interno no servidor: '.$e->getMessage();
     die;
 }
 
-$routeName = Routes::currentRouteName();
-
-/** @var Route|null $route */
-$route = array_find($routes->getList(), fn($_, $key) => $key === $routeName);
-
-if ($route) {
-    $route->render();
-    die;
-}
-
-http_response_code(404);

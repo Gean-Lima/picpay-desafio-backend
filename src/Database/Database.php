@@ -3,30 +3,35 @@
 namespace Neo\PicpayDesafioBackend\Database;
 
 use Exception;
-use Neo\PicpayDesafioBackend\Database\Migrations\InterfaceMigrate;
 use PDO;
 
 class Database
 {
     private PDO $connection;
 
+    private string $database {
+        set(string $value) {
+            if (empty($value)) {
+                throw new \InvalidArgumentException('Database name cannot be empty.');
+            }
+            $this->database = $value;
+        }
+    }
+
     public function __construct(
-        private DatabaseDriver $driver,
-        private string $database,
+        string $database,
         private ?string $host = null,
         private ?string $port = null,
         private ?string $username = null,
         private ?string $password = null,
     ) {
-        $this->connection = match ($this->driver) {
-            DatabaseDriver::MYSQL => new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->database}",$this->username, $this->password),
-            DatabaseDriver::SQLITE => new PDO('sqlite:'.$this->database)
-        };
+        $this->database = $database;
+        $this->connection = new PDO("mysql:host={$this->host};port={$this->port};dbname={$this->database}",$this->username, $this->password);
     }
 
-    public function getDriver(): DatabaseDriver
+    public function getDatabaseName(): string
     {
-        return $this->driver;
+        return $this->database;
     }
 
     public function query(string $sql, array $params = []): array
@@ -44,10 +49,4 @@ class Database
             throw new Exception("Query failed: " . $e->getMessage());
         }
     }
-}
-
-enum DatabaseDriver: string
-{
-    case MYSQL = 'mysql';
-    case SQLITE = 'sqlite';
 }

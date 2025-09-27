@@ -7,8 +7,7 @@
         },
         "files": [
             "src/Helpers/debug.php",
-            "src/Helpers/http.php",
-            "src/Helpers/database.php"
+            "src/Helpers/http.php"
         ]
     },
     "authors": [
@@ -19,10 +18,15 @@
     ],
     "scripts": {
         "execute": "exec php ./src/Command/command.php",
-        "serve": "exec php -S localhost:8000",
+        "serve": "exec php -S localhost:8000 -t public",
         "test": "exec php ./vendor/bin/phpunit"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.1"
+    },
+    "config": {
+        "platform": {
+            "php": "8.4"
+        }
     }
 }

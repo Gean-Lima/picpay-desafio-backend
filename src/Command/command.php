@@ -1,24 +1,32 @@
 <?php
 
-require_once __DIR__.'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-$commands = [
-    'migrate' => Neo\PicpayDesafioBackend\Command\MigrateCommand::class,
-    'rollback' => Neo\PicpayDesafioBackend\Command\RollbackCommand::class
-];
+try {
+    require_once __DIR__ . '/../bootstrap.php';
 
-$command = $argv[1] ?? null;
+    $commands = [
+        'migrate' => Neo\PicpayDesafioBackend\Command\MigrateCommand::class,
+        'migrate:rollback' => Neo\PicpayDesafioBackend\Command\RollbackCommand::class
+    ];
 
-if (!$command) {
-    echo "Nenhum comando informado.".PHP_EOL;
+    $command = $argv[1] ?? null;
+
+    if (!$command) {
+        echo "Nenhum comando informado." . PHP_EOL;
+        die;
+    }
+
+    if (!key_exists($command, $commands)) {
+        echo "Comando '$command' não encontrado." . PHP_EOL;
+        die;
+    }
+
+    $commandClass = $commands[$command];
+
+    call_user_func([$commandClass, 'execute'], $container, array_slice($argv, 2));
+}
+catch (Exception $e) {
+    echo "Erro ao executar comando: " . $e->getMessage() . PHP_EOL;
     die;
 }
-
-if (!key_exists($command, $commands)) {
-    echo "Comando '$command' não encontrado.".PHP_EOL;
-    die;
-}
-
-$commandClass = $commands[$command];
-
-call_user_func([$commandClass, 'execute'], array_slice($argv, 2));

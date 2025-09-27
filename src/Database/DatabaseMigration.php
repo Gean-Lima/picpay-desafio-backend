@@ -8,7 +8,7 @@ use Neo\PicpayDesafioBackend\Database\InterfaceMigrate;
 
 class DatabaseMigration
 {
-    public function __construct(private Database $database, private Config $config) {}
+    public function __construct(private Database $database) {}
 
     public function migrate(): bool
     {
@@ -18,7 +18,7 @@ class DatabaseMigration
             $migrationsTableExist = $this->database->query(<<<SQL
                 SELECT COUNT(*) AS total FROM information_schema.tables
                 WHERE table_schema = ? AND table_name = 'migrations'
-            SQL, [$this->config->get('database.name')]);
+            SQL, [ $this->database->getDatabaseName() ]);
             $migrationsTableExist = (int) $migrationsTableExist[0]['total'];
 
             if ($migrationsTableExist > 0) {
