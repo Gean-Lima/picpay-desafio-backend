@@ -6,10 +6,10 @@ class ContainerDependency
 {
     private array $services = [];
 
-    public function __construct(...$services)
+    public function __construct(array $services)
     {
         foreach ($services as $className => $service) {
-            if (class_exists($className) && is_object($service)) {
+            if (!class_exists($className) || !is_object($service)) {
                 throw new \InvalidArgumentException("Service for {$className} must be an object.");
             }
 

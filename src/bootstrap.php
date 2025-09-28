@@ -29,3 +29,16 @@ $container = new ContainerDependency([
     Config::class   => $config,
     Database::class => $database
 ]);
+
+function container(?ContainerDependency $set = null): ContainerDependency
+{
+    static $container;
+
+    if ($set) {
+        $container = $set;
+    }
+
+    return $container;
+}
+
+container($container);

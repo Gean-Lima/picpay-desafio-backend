@@ -24,7 +24,7 @@ try {
 
     $commandClass = $commands[$command];
 
-    call_user_func([$commandClass, 'execute'], $container, array_slice($argv, 2));
+    call_user_func([$commandClass, 'execute'], container(), array_slice($argv, 2));
 }
 catch (Exception $e) {
     echo "Erro ao executar comando: " . $e->getMessage() . PHP_EOL;
