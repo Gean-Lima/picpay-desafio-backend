@@ -6,6 +6,8 @@ RUN apt-get update && \
 
 RUN a2enmod rewrite
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
