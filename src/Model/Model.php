@@ -2,6 +2,7 @@
 
 namespace Neo\PicpayDesafioBackend\Model;
 
+use App\Entities\Entity;
 use Neo\PicpayDesafioBackend\Database\Database;
 
 abstract class Model
@@ -26,6 +27,22 @@ abstract class Model
         }
     }
 
+    abstract protected string $entityClass {
+        get;
+        set(string $value) {
+            if (!is_subclass_of($value, Entity::class)) {
+                throw new \InvalidArgumentException('Entity class must be a subclass of Entity.');
+            }
+
+            if (empty($value)) {
+                throw new \InvalidArgumentException('Entity class cannot be empty.');
+            }
+
+            $this->entityClass = $value;
+        }
+    }
+
+    // Singleton Database instance
     private static ?Database $database = null;
 
     static function setDatabase(Database $database): void

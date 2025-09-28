@@ -13,4 +13,6 @@ class UserModel extends Model
         'email',
         'password'
     ];
+
+    protected string $entityClass = \App\Entities\UserEntity::class;
 }
