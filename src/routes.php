@@ -1,6 +1,7 @@
 <?php
 
 use Neo\PicpayDesafioBackend\Controller\Web\HomeController;
+use Neo\PicpayDesafioBackend\Http\Middleware\AuthMiddleware;
 use Neo\PicpayDesafioBackend\Http\Response;
 use Neo\PicpayDesafioBackend\Http\Routing\Route;
 
@@ -19,7 +20,7 @@ Route::get('/api/up', function() {
         'message' => 'Successfully',
         'status' => 'success'
     ]);
-});
+}, [AuthMiddleware::class]);
 
 Route::post('/api/login', [AuthController::class, 'login']);
 
