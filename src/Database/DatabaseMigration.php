@@ -3,15 +3,30 @@
 namespace Neo\PicpayDesafioBackend\Database;
 
 use Exception;
-use Neo\PicpayDesafioBackend\Config\Config;
 use Neo\PicpayDesafioBackend\Database\InterfaceMigrate;
 
 class DatabaseMigration
 {
-    public function __construct(private Database $database) {}
+    public function __construct(private Database $database, private bool $debug = true) {}
+
+    private function noDebugStart(): void
+    {
+        if ($this->debug) return;
+
+        ob_start();
+    }
+
+    private function noDebugEnd(): void
+    {
+        if ($this->debug) return;
+
+        ob_end_clean();
+    }
 
     public function migrate(): bool
     {
+        $this->noDebugStart();
+
         try {
             $migrations = [];
 
@@ -74,15 +89,22 @@ class DatabaseMigration
                 $this->database->query('INSERT INTO migrations (migration_name) VALUES (?)', [$file]);
             }
 
+            $this->noDebugEnd();
+
             return true;
         } catch (Exception $e) {
             echo "Migration failed: " . $e->getMessage().PHP_EOL;
+
+            $this->noDebugEnd();
+
             return false;
         }
     }
 
     public function rollback(): bool
     {
+        $this->noDebugStart();
+
         try {
             $rows = $this->database->query('SELECT * FROM migrations ORDER BY created_at DESC LIMIT 1');
             $migration = $rows[0]['migration_name'];
@@ -124,10 +146,15 @@ class DatabaseMigration
 
             if (!str_starts_with($migration, '0000')) $this->database->query('DELETE FROM migrations WHERE migration_name = ?', [$migration]);
 
+            $this->noDebugEnd();
+
             return true;
         }
         catch (Exception $e) {
             echo 'Rollback failed: '.$e->getMessage().PHP_EOL;
+
+            $this->noDebugEnd();
+
             return false;
         }
     }

@@ -1,4 +1,5 @@
 {
+    "version": "1.0.0",
     "name": "neo/picpay-desafio-backend",
     "autoload": {
         "psr-4": {
@@ -7,7 +8,8 @@
         },
         "files": [
             "src/Helpers/debug.php",
-            "src/Helpers/http.php"
+            "src/Helpers/http.php",
+            "src/Helpers/infra.php"
         ]
     },
     "authors": [

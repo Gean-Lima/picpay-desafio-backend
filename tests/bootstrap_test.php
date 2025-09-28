@@ -1,7 +1,7 @@
 <?php
 
 use Neo\PicpayDesafioBackend\Config\Config;
-use Neo\PicpayDesafioBackend\Config\LoaderConfigEnv;
+use Neo\PicpayDesafioBackend\Config\LoaderConfigMap;
 use Neo\PicpayDesafioBackend\Database\Database;
 use Neo\PicpayDesafioBackend\Infra\ContainerDependency;
 use Neo\PicpayDesafioBackend\Model\Model;
@@ -10,7 +10,13 @@ use Neo\PicpayDesafioBackend\Model\Model;
  * Inicia as configurações do sistema.
  */
 
-$loaderConfig = new LoaderConfigEnv(__DIR__.'/../.env');
+$loaderConfig = new LoaderConfigMap([
+    'DATABASE_HOST' => 'database',
+    'DATABASE_PORT' => '3306',
+    'DATABASE_USERNAME' => 'root',
+    'DATABASE_PASSWORD' => 'root',
+    'DATABASE_NAME' => 'picpay_simplificado_test',
+]);
 $config = new Config($loaderConfig);
 
 /**
